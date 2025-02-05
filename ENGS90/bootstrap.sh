@@ -1,3 +1,3 @@
 #!/bin/sh
-export FLASK_APP=./snow/index1.py
-pipenv run flask --debug run
+export FLASK_APP=./backend.py
+pipenv run flask run --debug --port=5000
