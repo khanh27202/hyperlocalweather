@@ -30,13 +30,13 @@ const CardsComponentHossain = ({ unit }) => {
     setLoading(true);
     console.log("Fetching data...");
 
-    axios.get('http://127.0.0.1:5002/api/weather')
+    axios.get('${process.env.REACT_APP_API_URL}/weather')
       .then(weatherResponse => {
         setWeatherData(weatherResponse.data);
 
         // Introduce a delay before making the second request
         setTimeout(() => {
-          axios.get('http://127.0.0.1:5002/api/weather/hossain')
+          axios.get('${process.env.REACT_APP_API_URL}/weather/hossain')
             .then(hossainResponse => {
               setHossainData(hossainResponse.data);
               setLoading(false);

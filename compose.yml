@@ -8,6 +8,8 @@ services:
       - ./frontend/node_modules:/frontend/node_modules
     env_file:
       - ./frontend/.env
+      - ./frontend/.env.local
+      - ./frontend/.env.production
     environment:
       NODE_ENV: development
     stdin_open: true
