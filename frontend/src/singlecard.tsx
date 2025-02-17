@@ -1,11 +1,15 @@
 import React from "react";
-import { Cards } from "@cloudscape-design/components";
+import { Cards, Link } from "@cloudscape-design/components";
 
 const SingleCardComponent = ({ item }) => {
     return (
         <Cards
             cardDefinition={{
-                header: item => item.name,
+                header: item => (
+                    <Link href="#" fontSize="heading-m">
+                        {item.name}
+                    </Link>
+                ),
                 sections: item.sections.map(section => ({
                     id: section.id,
                     header: section.header,
