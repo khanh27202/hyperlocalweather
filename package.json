@@ -1,0 +1,33 @@
+{
+  "name": "hyperlocalweather",
+  "version": "1.0.0",
+  "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://khanh27202: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@github.com/khanh27202/hyperlocalweather.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/khanh27202/hyperlocalweather/issues"
+  },
+  "homepage": "https://github.com/khanh27202/hyperlocalweather#readme",
+  "devDependencies": {
+    "@aws-amplify/backend": "^1.14.1",
+    "@aws-amplify/backend-cli": "^1.4.10",
+    "aws-cdk": "^2.178.2",
+    "aws-cdk-lib": "^2.178.2",
+    "constructs": "^10.4.2",
+    "esbuild": "^0.25.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "aws-amplify": "^6.13.0"
+  }
+}
