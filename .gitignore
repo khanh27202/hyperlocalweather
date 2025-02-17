@@ -1,0 +1,48 @@
+# Node modules and build directories
+/frontend/node_modules/
+/frontend/build/
+
+# Backend Python virtual environments
+/server/venv/
+/server/__pycache__/
+
+# Environment files
+/frontend/.env.local
+/frontend/.env.development.local
+/frontend/.env.test.local
+/frontend/.env.production.local
+/server/.env
+
+# Logs
+/frontend/npm-debug.log*
+/frontend/yarn-debug.log*
+/frontend/yarn-error.log*
+*.log
+*.tmp
+*.temp
+
+# Docker specific files
+.dockerenv
+.dockerignore
+/docker-volumes/
+**/*.dockerfile
+*.docker.tmp
+*.tar
+*.tar.gz
+docker-compose.override.yml
+
+# Editors and IDEs settings
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime*
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# Misc
+.DS_Store
