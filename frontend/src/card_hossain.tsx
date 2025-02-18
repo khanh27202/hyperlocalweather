@@ -30,13 +30,13 @@ const CardsComponentHossain = ({ unit }) => {
     setLoading(true);
     console.log("Fetching data...");
 
-    axios.get('https://server-api.eba-znrqzrgw.us-east-2.elasticbeanstalk.com/api/weather')
+    axios.get('https://api.dartmouth-team1snowremoval.com/api/weather')
       .then(weatherResponse => {
         setWeatherData(weatherResponse.data);
 
         // Introduce a delay before making the second request
         setTimeout(() => {
-          axios.get('https://server-api.eba-znrqzrgw.us-east-2.elasticbeanstalk.com/api/weather/hossain')
+          axios.get('https://api.dartmouth-team1snowremoval.com/api/weather/hossain')
             .then(hossainResponse => {
               setHossainData(hossainResponse.data);
               setLoading(false);
