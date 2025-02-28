@@ -28,9 +28,12 @@ def Hossain_2014(H, p, Ce, Te, T, B, BPRT):
         denominator = (Te - Ce * T) * (T - Te) * BPRT * B
         if denominator == 0:
             return None
-        R = 5.163 * math.log(0.2) * Te * Ce * T * p * (H / denominator)
-        return R
-    except (ZeroDivisionError, ValueError):
+        elif T > 1:
+            return 0 
+        else:
+            R =  math.log(0.2) * Te * Ce * T * p * (H / denominator)
+            return max(0, R)
+    except (ZeroDivisionError, ValueError, TypeError):
         return None
 
 @app.route('/')
@@ -62,10 +65,10 @@ def get_hossain():
     try:
         # Use the stored temperature data
         sample_data = {
-            'snow_height': 1,
-            'snow_density': 0.91,
-            'salt_concentration': 1,
-            'salt_temp': f_to_c(last_tempf) + 2,
+            'snow_height': 0.25,
+            'snow_density': 300,
+            'salt_concentration': 0.23,
+            'salt_temp': -21,
             'pave_temp': f_to_c(last_tempf),
             'melt_speed': 0.49,
             'BPRT': 2.04
