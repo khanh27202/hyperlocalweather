@@ -1,6 +1,4 @@
 import * as React from "react";
-import { useState, useEffect } from "react";
-import axios from "axios";
 import Cards from "@cloudscape-design/components/cards";
 import Box from "@cloudscape-design/components/box";
 import SpaceBetween from "@cloudscape-design/components/space-between";
@@ -8,57 +6,11 @@ import Button from "@cloudscape-design/components/button";
 import Link from "@cloudscape-design/components/link";
 import { TiWeatherShower } from "react-icons/ti";
 import { GiSaltShaker } from "react-icons/gi";
-
-
-
-interface WeatherData {
-  lastData: {
-    tempf: number;
-  };
-}
-
-interface HossainData {
-  Hossain_2014_Result: string;
-}
+import { useWeatherHossainData } from "./useFetchData.tsx";
 
 const CardsComponent = ({ unit }) => {
-  const [weatherData, setWeatherData] = useState<WeatherData[] | null>(null);
-  const [hossainData, setHossainData] = useState<HossainData | null>(null);
-  const [loading, setLoading] = useState(true);
 
-  const fetchData = () => {
-    setLoading(true);
-    console.log("Fetching data...");
-
-    axios.get('https://api.dartmouth-team1snowremoval.com/api/weather')
-      .then(weatherResponse => {
-        console.log('Weather data:', weatherResponse.data);
-        setWeatherData(weatherResponse.data);
-
-        // Introduce a delay before making the second request
-        setTimeout(() => {
-          axios.get('https://api.dartmouth-team1snowremoval.com/api/weather/hossain')
-            .then(hossainResponse => {
-              console.log('Hossain data:', hossainResponse.data);
-              setHossainData(hossainResponse.data);
-              setLoading(false);
-            })
-            .catch(error => {
-              console.error("There was an error fetching the Hossain data!", error);
-              setLoading(false);
-            });
-        }, 1000); // 1 second delay
-      })
-      .catch(error => {
-        console.error("There was an error fetching the weather data!", error);
-        setLoading(false);
-      });
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
+  const { weatherData, hossainData, iceProbability, loading, refetch } = useWeatherHossainData();
   const convertAmount = (amount: number, unit: string) => {
     switch (unit) {
       case "cups":
@@ -71,19 +23,13 @@ const CardsComponent = ({ unit }) => {
     }
   };
 
-  const items = weatherData && hossainData ? [
+  const items = weatherData && iceProbability ? [
     {
       name: "Weather Condition",
       temperature: `${weatherData[0].lastData.tempf}°F`,
       location: "Thayer Parking Lot",
-      material: "Rock salt",
-      amount: `${convertAmount(Math.floor(parseFloat(hossainData.Hossain_2014_Result)), unit)} ${unit}`
+      iceprobability: `${iceProbability.probability * 100} %`,
     },
-    // {
-    //   name: "Salt Distribution Recommendation",
-    //   material: "Rock salt",
-    //   amount: `${convertAmount(Math.floor(parseFloat(hossainData.Hossain_2014_Result)), unit)} ${unit}`
-    // }
   ] : [];
 
   return (
@@ -107,6 +53,11 @@ const CardsComponent = ({ unit }) => {
             header: "Location",
             content: item => item.location || "N/A"
           },
+          {
+            id: "iceprobability",
+            header: "Ice Probability",
+            content: item => item.iceprobability || "N/A"
+          },
         ]
       }}
       cardsPerRow={[
@@ -124,7 +75,7 @@ const CardsComponent = ({ unit }) => {
         >
           <SpaceBetween size="m">
             <b>Reload to see current temperature and salt distribution.</b>
-            <Button onClick={fetchData}>Reload</Button>
+            <Button onClick={refetch}>Reload</Button>
           </SpaceBetween>
         </Box>
       }
@@ -134,3 +85,40 @@ const CardsComponent = ({ unit }) => {
 }
 
 export default CardsComponent;
+
+  // const [weatherData, setWeatherData] = useState<WeatherData[] | null>(null);
+  // const [hossainData, setHossainData] = useState<HossainData | null>(null);
+  // const [loading, setLoading] = useState(true);
+
+  // const fetchData = () => {
+  //   setLoading(true);
+  //   console.log("Fetching data...");
+
+  //   axios.get('https://api.dartmouth-team1snowremoval.com/api/weather')
+  //     .then(weatherResponse => {
+  //       console.log('Weather data:', weatherResponse.data);
+  //       setWeatherData(weatherResponse.data);
+
+  //       // Introduce a delay before making the second request
+  //       setTimeout(() => {
+  //         axios.get('https://api.dartmouth-team1snowremoval.com/api/weather/hossain')
+  //           .then(hossainResponse => {
+  //             console.log('Hossain data:', hossainResponse.data);
+  //             setHossainData(hossainResponse.data);
+  //             setLoading(false);
+  //           })
+  //           .catch(error => {
+  //             console.error("There was an error fetching the Hossain data!", error);
+  //             setLoading(false);
+  //           });
+  //       }, 1000); // 1 second delay
+  //     })
+  //     .catch(error => {
+  //       console.error("There was an error fetching the weather data!", error);
+  //       setLoading(false);
+  //     });
+  // };
+
+  // useEffect(() => {
+  //   fetchData();
+  // }, []);

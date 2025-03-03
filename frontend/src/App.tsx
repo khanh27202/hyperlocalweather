@@ -17,6 +17,7 @@ import messages from '@cloudscape-design/components/i18n/messages/all.en';
 import CardsComponent from './cards.tsx';
 import CardsComponentHossain from './card_hossain.tsx';
 import LineChartComponent from './linechart.tsx';
+import TableComponent from './table.tsx';
 
 const LOCALE = 'en';
 
@@ -40,18 +41,18 @@ export default function AppLayoutPreview() {
             ]}
           />
         }
-        notifications={
-          <Flashbar
-            items={[
-              {
-                type: 'info',
-                dismissible: true,
-                content: 'Ice is forming in 1 hour at Dicks House Parking Lot!',
-                id: 'message_1',
-              },
-            ]}
-          />
-        }
+        // notifications={
+        //   <Flashbar
+        //     items={[
+        //       {
+        //         type: 'info',
+        //         dismissible: true,
+        //         content: 'Ice is forming in 1 hour at Dicks House Parking Lot!',
+        //         id: 'message_1',
+        //       },
+        //     ]}
+        //   />
+        // }
         content={
           <ContentLayout
             header={
@@ -84,8 +85,7 @@ export default function AppLayoutPreview() {
                 <CardsComponent unit={unit} />
                 <CardsComponentHossain unit={unit} />
               </div>
-
-              <LineChartComponent />
+              <TableComponent />
             </Container>
           </ContentLayout>
         }
