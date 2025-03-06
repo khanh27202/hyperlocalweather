@@ -13,10 +13,10 @@ const CardsComponentHossain = ({ unit }) => {
 
   const convertAmount = (amount: number, unit: string) => {
     switch (unit) {
-      case "cups/sidewalk square":
-        return amount * 12.7 / 250; // 1 cup = 250 gram
+      case "cups/1000sqft":
+        return Math.round(amount / 0.55); // 1 cup = 250 gram
       case "grams/sidewalk square":
-        return amount * 12.7;
+        return Math.round(amount * 12.7);
       case "lbs/1000sqft":
       default:
         return amount;
