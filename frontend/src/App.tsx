@@ -1,86 +1,65 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import {
   AppLayout,
-  BreadcrumbGroup,
   Container,
   ContentLayout,
-  Flashbar,
   Header,
   Link,
-  ButtonDropdown
+  ButtonDropdown,
+  Modal,
+  Box,
+  SpaceBetween,
+  Button
 } from '@cloudscape-design/components';
 import { I18nProvider } from '@cloudscape-design/components/i18n';
-import { useState } from "react";
 
 import messages from '@cloudscape-design/components/i18n/messages/all.en';
 import CardsComponent from './cards.tsx';
 import CardsComponentHossain from './card_hossain.tsx';
-import LineChartComponent from './linechart.tsx';
 import TableComponent from './table.tsx';
+import InfoCardsComponent from './infocards.tsx';
 
 const LOCALE = 'en';
 
 export default function AppLayoutPreview() {
 
-  const [unit, setUnit] = useState("lbs");
+  const [unit, setUnit] = useState("lbs/1000sqft");
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const handleDropdownClick = (event) => {
     const selectedUnit = event.detail.id;
     setUnit(selectedUnit);
   };
 
+  const handleInfoClick = () => {
+    setIsModalVisible(true);
+  };
+
   return (
     <I18nProvider locale={LOCALE} messages={[messages]}>
       <AppLayout
-        breadcrumbs={
-          <BreadcrumbGroup
-            items={[
-              { text: 'Home', href: '#' },
-              { text: 'Service', href: '#' },
-            ]}
-          />
-        }
-        // notifications={
-        //   <Flashbar
-        //     items={[
-        //       {
-        //         type: 'info',
-        //         dismissible: true,
-        //         content: 'Ice is forming in 1 hour at Dicks House Parking Lot!',
-        //         id: 'message_1',
-        //       },
-        //     ]}
-        //   />
-        // }
         content={
           <ContentLayout
             header={
-              <Header variant="h1" info={<Link variant="info">Info</Link> }
+              <Header variant="h1" 
+                info={<Link variant="info" onClick={handleInfoClick}>Info</Link>}
                 actions={<ButtonDropdown
                   items={[
-                    { text: "Foco Cups", id: "cups", disabled: false },
-                    { text: "Buckets", id: "bucket", disabled: false },
-                    { text: "Pounds", id: "lbs", disabled: false },
+                    { text: "Foco Cups", id: "cups/1000sqft", disabled: false },
+                    { text: "Grams", id: "grams/sidewalk square", disabled: false },
+                    { text: "Pounds", id: "lbs/1000sqft", disabled: false },
                   ]}
                   onItemClick={handleDropdownClick}
                 >
                   Unit Display
                 </ButtonDropdown>}
-                >
+              >
                 Weather Dashboard
               </Header>
-              
             }
           >
-            <Container
-              // header={
-              //   <Header variant="h2" description="Container description">
-              //     Container header
-              //   </Header>
-              // }
-            >
-              {/* <div className="contentPlaceholder" /> */}
+            <Container>
               <div style={{ display: 'flex', gap: '40px,', justifyContent: 'space-evenly' }}>
                 <CardsComponent unit={unit} />
                 <CardsComponentHossain unit={unit} />
@@ -90,6 +69,21 @@ export default function AppLayoutPreview() {
           </ContentLayout>
         }
       />
+      <Modal
+        onDismiss={() => setIsModalVisible(false)}
+        visible={isModalVisible}
+        footer={
+          <Box float="right">
+            <SpaceBetween direction="horizontal" size="xs">
+              <Button variant="link" onClick={() => setIsModalVisible(false)}>Cancel</Button>
+              <Button variant="primary" onClick={() => setIsModalVisible(false)}>Ok</Button>
+            </SpaceBetween>
+          </Box>
+        }
+        header="Salting Info Deck"
+      >
+        <InfoCardsComponent/>
+      </Modal>
     </I18nProvider>
   );
 }

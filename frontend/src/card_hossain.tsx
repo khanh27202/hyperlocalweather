@@ -13,11 +13,11 @@ const CardsComponentHossain = ({ unit }) => {
 
   const convertAmount = (amount: number, unit: string) => {
     switch (unit) {
-      case "cups":
-        return amount / 4; // 1 cup = 4 lbs
-      case "bucket":
-        return amount / 10; // 1 bucket = 10 lbs
-      case "lbs":
+      case "cups/sidewalk square":
+        return amount * 12.7 / 250; // 1 cup = 250 gram
+      case "grams/sidewalk square":
+        return amount * 12.7;
+      case "lbs/1000sqft":
       default:
         return amount;
     }
@@ -27,7 +27,7 @@ const CardsComponentHossain = ({ unit }) => {
     {
       name: "Salt Distribution Recommendation",
       material: "Rock salt",
-      amount: `${convertAmount(Math.floor(parseFloat(hossainData.Hossain_2014_Result)), unit)} ${unit}`
+      amount: `${convertAmount(Math.floor(parseFloat(hossainData.normal_salt)), unit)} ${unit}`
     }
   ] : [];
 
@@ -35,7 +35,7 @@ const CardsComponentHossain = ({ unit }) => {
     <Cards
       cardDefinition={{
         header: item => (
-          <Link href="#" fontSize="heading-m">
+          <Link fontSize="heading-m">
             {item.name === "Salt Distribution Recommendation" && <GiSaltShaker style={{ marginRight: '8px' }}/>}
             {item.name}
           </Link>

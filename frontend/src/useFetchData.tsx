@@ -8,7 +8,11 @@ interface WeatherData {
   }
   
   interface HossainData {
-    Hossain_2014_Result: string;
+    blue: string;
+    green: string;
+    jet_blue: string;
+    normal_salt: string;
+    slicer: string;
   }
 
   interface IceProbabilityData {
@@ -28,10 +32,10 @@ interface WeatherData {
       try {
         const iceResponse = await axios.get('https://weather-app-67dat.ondigitalocean.app/api/weather/ice?n=10');
         setIceProbability(iceResponse.data);
-        const weatherResponse = await axios.get('https://api.dartmouth-team1snowremoval.com/api/weather');
+        const weatherResponse = await axios.get('https://weather-app-67dat.ondigitalocean.app/api/weather');
         setWeatherData(weatherResponse.data);
         await new Promise(resolve => setTimeout(resolve, 1000));
-        const hossainResponse = await axios.get('https://api.dartmouth-team1snowremoval.com/api/weather/hossain');
+        const hossainResponse = await axios.get('https://weather-app-67dat.ondigitalocean.app/api/weather/hossain');
         setHossainData(hossainResponse.data);
 
         

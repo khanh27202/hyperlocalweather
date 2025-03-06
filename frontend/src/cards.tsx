@@ -10,25 +10,14 @@ import { useWeatherHossainData } from "./useFetchData.tsx";
 
 const CardsComponent = ({ unit }) => {
 
-  const { weatherData, hossainData, iceProbability, loading, refetch } = useWeatherHossainData();
-  const convertAmount = (amount: number, unit: string) => {
-    switch (unit) {
-      case "cups":
-        return amount / 4; // 1 cup = 4 lbs
-      case "bucket":
-        return amount / 10; // 1 bucket = 10 lbs
-      case "lbs":
-      default:
-        return amount;
-    }
-  };
+  const { weatherData, iceProbability, loading, refetch } = useWeatherHossainData();
 
   const items = weatherData && iceProbability ? [
     {
       name: "Weather Condition",
       temperature: `${weatherData[0].lastData.tempf}°F`,
       location: "Thayer Parking Lot",
-      iceprobability: `${iceProbability.probability * 100} %`,
+      iceprobability: `${iceProbability.probability} %`,
     },
   ] : [];
 
@@ -36,7 +25,7 @@ const CardsComponent = ({ unit }) => {
     <Cards
       cardDefinition={{
         header: item => (
-          <Link href="#" fontSize="heading-m">
+          <Link fontSize="heading-m">
             {item.name === "Weather Condition" && <TiWeatherShower style={{ marginRight: '8px' }} />} 
             {item.name === "Salt Distribution Recommendation" && <GiSaltShaker style={{ marginRight: '8px' }}/>}
             {item.name}

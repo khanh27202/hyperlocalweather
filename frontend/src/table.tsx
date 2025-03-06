@@ -7,7 +7,27 @@ import Header from "@cloudscape-design/components/header";
 import { useWeatherHossainData } from "./useFetchData.tsx";
 
 const TableComponent = () => {
-    const { weatherData, hossainData, loading, refetch } = useWeatherHossainData();
+    const { hossainData, loading, refetch } = useWeatherHossainData();
+    const items = hossainData ? [
+      {
+        name: "Green",
+        alt: hossainData.green === "N/A" ? "N/A" : `${hossainData.green} lbs/1000sqft`
+      },
+      {
+        name: "Blue",
+        alt: hossainData.blue === "N/A" ? "N/A" : `${hossainData.blue} lbs/1000sqft`
+      },
+      {
+        name: "Slicer",
+        alt: hossainData.slicer === "N/A" ? "N/A" : `${hossainData.slicer} lbs/1000sqft`
+      },
+      {
+        name: "Jet Blue",
+        alt: hossainData.jet_blue === "N/A" ? "N/A" : `${hossainData.jet_blue} lbs/1000sqft`
+      },
+      
+    ] : []
+
       
   return (
     <Table
@@ -28,7 +48,7 @@ const TableComponent = () => {
         },
         {
           id: "value",
-          header: "Text value",
+          header: "Amount",
           cell: item => item.alt,
           sortingField: "alt"
         }
@@ -38,25 +58,9 @@ const TableComponent = () => {
         { id: "value", visible: true }
       ]}
       enableKeyboardNavigation
-      items={[
-        {
-          name: "Green",
-          alt: "First"
-        },
-        {
-          name: "Blue",
-          alt: "Second"
-        },
-        {
-          name: "Slicer",
-          alt: "Third"
-        },
-        {
-          name: "Jet Blue",
-          alt: "Fourth"
-        },
-      ]}
+      items={items}
       loadingText="Loading resources"
+      loading={loading}
       empty={
         <Box
           margin={{ vertical: "xs" }}
@@ -65,7 +69,7 @@ const TableComponent = () => {
         >
           <SpaceBetween size="m">
             <b>No resources</b>
-            <Button>Create resource</Button>
+            <Button onClick={refetch}>Reload</Button>
           </SpaceBetween>
         </Box>
       }
