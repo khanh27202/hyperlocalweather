@@ -3,6 +3,9 @@
 ## 📌 Overview  
 This project consists of a **frontend** (React) and a **backend** (Flask) running in Docker containers. You can run both services together using Docker Compose or start only the frontend for development.
 
+🌍 **Live Demo:** [Dartmouth Snow Removal System](https://www.dartmouth-team1snowremoval.com/)  
+![Project Demo](https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExcDNrbTdma3NhNTZtaDQ0eTZ1cDExeDRjNmJwNmswejA2MXNoazhxcCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/sEEt0iPa89YE0hzjFl/giphy.gif)
+
 ---
 
 ## 🛠 Prerequisites  
