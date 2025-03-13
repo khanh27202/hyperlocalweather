@@ -1,70 +1,75 @@
-# Getting Started with Create React App
+# ❄️ ENGS 90: SubZero Systems
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 📌 Overview  
+This project consists of a **frontend** (React) and a **backend** (Flask) running in Docker containers. You can run both services together using Docker Compose or start only the frontend for development.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 🛠 Prerequisites  
+Ensure you have the following installed:  
 
-### `npm start`
+- **[Docker & Docker Compose](https://docs.docker.com/get-docker/)**
+- **[Node.js & npm](https://nodejs.org/)** (Only if running the frontend outside Docker)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 🔥 Running the Full Project (Frontend + Backend)
 
-### `npm test`
+To build and start both containers:
+```sh
+docker-compose up --build
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+This will:
 
-### `npm run build`
+- Start the **frontend** on [http://localhost:3000](http://localhost:3000)
+- Start the **backend** on [http://127.0.0.1:5002](http://127.0.0.1:5002/)
+To stop the containers:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```sh
+docker-compose down
+```
+---
+## 🎯 Running Only the Frontend (Without Docker)
+For faster development, you can run the frontend locally:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```sh
+cd frontend
+npm install
+npm start
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+This starts the frontend on [http://localhost:3000](http://localhost:3000)and will automatically reload when you make changes.
 
-### `npm run eject`
+---
+## 🛠 Running Only the Backend (In Docker)
+If you only need to test backend changes:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```sh
+docker-compose up --build api
+```
+or manually:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```sh
+cd server
+docker build -t my-backend .
+docker run -p 5002:5000 my-backend
+```
+This starts the backend on [http://127.0.0.1:5002](http://127.0.0.1:5002/)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+---
+## 🔄 Rebuilding the Project
+If you make changes and need to rebuild:
+```
+docker-compose build
+docker-compose up
+```
+---
+## 🛑 Stopping Everything
+To stop and remove all running containers:
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```sh
+docker-compose down
+```
 
-## Learn More
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
