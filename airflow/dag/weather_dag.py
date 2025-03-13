@@ -2,37 +2,83 @@ import pandas as pd
 from airflow import DAG
 from datetime import timedelta, datetime
 from airflow.providers.http.sensors.http import HttpSensor
-from airflow.providers.http.operators.http import HttpOperator
+from airflow.providers.http.operators.http import SimpleHttpOperator
 from airflow.operators.python import PythonOperator
-import boto3
-from dotenv import load_dotenv
-
-# Load environment variables from the .env file
-load_dotenv()
-
-# Retrieve the AWS keys from environment variables
-aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID')
-aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
-
-# Initialize the S3 client
-s3_client = boto3.client(
-    's3',
-    aws_access_key_id=aws_access_key_id,
-    aws_secret_access_key=aws_secret_access_key,
-    region_name='us-east-2'
-)
+import psycopg2
 
 
-def upload_file(file_path, bucket_name, s3_key):    
+DB_HOST = "hyperlocal-db.c41iwuymw07w.us-east-1.rds.amazonaws.com" 
+DB_NAME = "weather_db"
+DB_USER = "postgres"
+DB_PASSWORD = "Team1isfire!"  
+DB_PORT = "5432" 
+
+def get_db_connection():
+    """
+    Function to create and return a database connection
+    """
     try:
-        s3_client.upload_file(file_path, bucket_name, s3_key)
-        print(f"File uploaded successfully to {bucket_name}/{s3_key}")
-        return True
-    except Exception as e:
-        print(f"Error uploading file: {str(e)}")
-        return False
+        # Establish the connection with additional options to handle authentication
+        conn = psycopg2.connect(
+            host=DB_HOST,
+            database=DB_NAME,
+            user=DB_USER,
+            password=DB_PASSWORD,
+            port=DB_PORT,
+            options="-c client_min_messages=notice"  # Add options to handle authentication
+        )
+        return conn
+    except psycopg2.Error as e:
+        print(f"Database connection error: {e}")
+        return None  # Return None instead of raising an exception
 
-def transform_loaded_data(task_instance):
+def test_connection():
+    conn = None
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        # Simple test query
+        cur.execute("SELECT version();")
+        version = cur.fetchone()
+        print(f"Connected to PostgreSQL: {version[0]}")
+        cur.close()
+        return conn  # Return the connection for further use
+    except Exception as e:
+        print(f"Error: {e}")
+        if conn:
+            conn.close()
+        return None
+    
+def insert_weather_data(tempf, humidity, windspeedmph, windgustmph, winddir):
+    """
+    Function to insert weather data into the weather_t table
+    """
+    conn = None
+    try:
+        conn = get_db_connection()
+        if conn is None:
+            print("Failed to establish database connection")
+            return
+            
+        cur = conn.cursor()
+        insert_query = """
+        INSERT INTO weather_t (tempf, humidity, windspeedmph, windgustmph, winddir, timestamp)
+        VALUES (%s, %s, %s, %s, %s, EXTRACT(EPOCH FROM NOW())::INTEGER);
+        """
+        cur.execute(insert_query, (tempf, humidity, windspeedmph, windgustmph, winddir))
+        conn.commit()
+        print("Weather data inserted successfully.")
+        cur.close()
+    except Exception as e:
+        print(f"Error inserting data: {e}")
+        if conn is not None:  # Check if conn exists before calling rollback
+            conn.rollback()
+    finally:
+        if conn is not None:  # Check if conn exists before calling close
+            conn.close()
+            print("Database connection closed.")
+
+def upload_weather_data(task_instance):
     weather_data = task_instance.xcom_pull(task_ids="extract_weather_data")
 
     if weather_data is None:
@@ -40,32 +86,10 @@ def transform_loaded_data(task_instance):
         return None  
 
     last_data = weather_data[0]["lastData"]
- 
-    date_utc = datetime.fromtimestamp(last_data["dateutc"] / 1000)  
-    
-    transformed_data = {
-        "Temperature (F)": last_data["tempf"],
-        "Wind Gust (mph)": last_data["windgustmph"],
-        "Wind Speed (mph)": last_data["windspeedmph"],
-        "Humidity": last_data["humidity"],
-        "Hourly Rain (in)": weather_data[0]["lastData"]["hourlyrainin"],
-        "Date UTC": date_utc
-    }
-    
-    transformed_data_list = [transformed_data]
-    df_data = pd.DataFrame(transformed_data_list)
 
-    now = datetime.now()
-    dt_string = now.strftime("%m_%d_%Y_%H_%M_%S")  
-    dt_string = 'current_weather_data_thayer_' + dt_string
-    df_data.to_csv(f"{dt_string}.csv", index=False) # add , storage_options=aws_credential
-
-    file_path = dt_string+".csv"
-    bucket_name = 'weatherapi741-yml'
-    s3_key = dt_string+".csv"
-    upload_file(file_path, bucket_name, s3_key)
+    insert_weather_data(last_data["tempf"], last_data["humidity"], last_data["windspeedmph"], last_data["windgustmph"], last_data["winddir"])
     
-    return df_data
+    return 1
 
 
 default_args = {
@@ -80,7 +104,7 @@ default_args = {
 
 with DAG('weather_dag',
          default_args=default_args,
-         schedule='@hourly',
+         schedule_interval='*/10 * * * *',
          catchup=False) as dag:
 
     is_weather_api_react = HttpSensor(
@@ -93,7 +117,7 @@ with DAG('weather_dag',
         }
     )
 
-    extract_weather_data = HttpOperator(
+    extract_weather_data = SimpleHttpOperator(
         task_id='extract_weather_data',
         http_conn_id='ambient_weather_api',
         endpoint='/v1/devices/',
@@ -106,9 +130,9 @@ with DAG('weather_dag',
         log_response=True
     )
 
-    transform_loaded_weather_data = PythonOperator(
-        task_id='transform_loaded_weather_data',
-        python_callable=transform_loaded_data,
+    upload_weather_data = PythonOperator(
+        task_id='upload_weather_data',
+        python_callable=upload_weather_data,
     )
 
-    is_weather_api_react >> extract_weather_data >> transform_loaded_weather_data
+    is_weather_api_react >> extract_weather_data >> upload_weather_data
